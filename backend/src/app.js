@@ -5,6 +5,10 @@ import routes from './routes/index.js';
 
 const app = express();
 
+app.get('/', (_req, res) => {
+  res.status(200).send('Backend is running 🚀');
+});
+
 const corsOptions = {
   origin(origin, callback) {
     if (!origin || env.clientUrls.includes(origin)) {
@@ -24,10 +28,6 @@ app.use(
   cors(corsOptions)
 );
 app.options('*', cors(corsOptions));
-
-app.get('/', (_req, res) => {
-  res.status(200).type('text/plain').send('Backend is running');
-});
 
 app.get('/api/health', (_req, res) => {
   res.status(200).json({
@@ -49,11 +49,10 @@ app.use((_req, res) => {
 });
 
 app.use((err, _req, res, _next) => {
-  const statusCode = res.statusCode >= 400 ? res.statusCode : 500;
-
-  res.status(statusCode).json({
+  console.error(err);
+  res.status(500).json({
     success: false,
-    message: err.message || 'Server error'
+    message: 'Internal Server Error'
   });
 });
 
