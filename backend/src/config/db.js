@@ -13,11 +13,6 @@ async function connectDB() {
     return connection;
   } catch (error) {
     console.error(`MongoDB connection failed: ${error.message}`);
-
-    if (env.nodeEnv === 'production') {
-      process.exit(1);
-    }
-
     console.warn('Starting API without MongoDB. Database routes will fail until MongoDB is available.');
     return null;
   }

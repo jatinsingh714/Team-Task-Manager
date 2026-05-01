@@ -24,15 +24,15 @@ const env = {
 };
 
 if (isProduction && !process.env.MONGO_URI) {
-  throw new Error('MONGO_URI must be set in production.');
+  console.warn('MONGO_URI is not set. Database routes will fail until it is configured.');
 }
 
 if (isProduction && !process.env.JWT_SECRET) {
-  throw new Error('JWT_SECRET must be set in production.');
+  console.warn('JWT_SECRET is not set. Set it before using authenticated routes in production.');
 }
 
 if (isProduction && !process.env.CLIENT_URL) {
-  throw new Error('CLIENT_URL must be set in production.');
+  console.warn('CLIENT_URL is not set. Browser CORS requests will be blocked until it is configured.');
 }
 
 export default env;
