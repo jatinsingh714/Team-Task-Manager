@@ -2,7 +2,6 @@ import cors from 'cors';
 import express from 'express';
 import env from './config/env.js';
 import routes from './routes/index.js';
-import { notFound } from './middleware/errorMiddleware.js';
 
 const app = express();
 
@@ -26,6 +25,10 @@ app.use(
 );
 app.options('*', cors(corsOptions));
 
+app.get('/', (_req, res) => {
+  res.status(200).type('text/plain').send('Backend is running');
+});
+
 app.get('/api/health', (_req, res) => {
   res.status(200).json({
     success: true,
@@ -38,11 +41,19 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api', routes);
 
-app.use(notFound);
-app.use((err, _req, res, _next) => {
-  res.status(500).json({
+app.use((_req, res) => {
+  res.status(404).json({
     success: false,
-    message: err.message
+    message: 'Route not found'
+  });
+});
+
+app.use((err, _req, res, _next) => {
+  const statusCode = res.statusCode >= 400 ? res.statusCode : 500;
+
+  res.status(statusCode).json({
+    success: false,
+    message: err.message || 'Server error'
   });
 });
 
