@@ -1,0 +1,15 @@
+{
+  "name": "tt-manager",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full-stack MERN application for TT Manager.",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "start": "npm run start --prefix backend",
+    "build": "npm run build --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
