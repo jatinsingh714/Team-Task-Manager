@@ -2,13 +2,14 @@ import app from './app.js';
 import env from './config/env.js';
 import { connectDB, disconnectDB } from './config/db.js';
 
+const PORT = process.env.PORT || 5000;
 let server;
 
 async function startServer() {
   await connectDB();
 
-  server = app.listen(env.port, () => {
-    console.log(`Server running in ${env.nodeEnv} mode on port ${env.port}`);
+  server = app.listen(PORT, () => {
+    console.log(`Server running in ${env.nodeEnv} mode on port ${PORT}`);
   });
 }
 
