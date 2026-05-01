@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
-import api from '../services/api.js';
+import api, { API } from '../services/api.js';
 import { itemVariants, pageTransition, pageVariants } from '../utils/motion.js';
 
 const emailPattern = /^\S+@\S+\.\S+$/;
@@ -53,7 +53,7 @@ function Signup() {
     setLoading(true);
 
     try {
-      const response = await api.post('/auth/signup', {
+      const response = await api.post(`${API}/auth/signup`, {
         name: formData.name.trim(),
         email: formData.email.trim(),
         password: formData.password
@@ -67,7 +67,7 @@ function Signup() {
         navigate('/dashboard');
       }, 500);
     } catch (requestError) {
-      toast.error(requestError.response?.data?.message || 'Unable to create account. Please try again.');
+      toast.error(requestError.apiMessage || 'Unable to create account. Please try again.');
     } finally {
       setLoading(false);
     }

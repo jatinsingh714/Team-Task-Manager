@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
-import api from '../services/api.js';
+import api, { API } from '../services/api.js';
 import { itemVariants, pageTransition, pageVariants } from '../utils/motion.js';
 
 function Login() {
@@ -33,7 +33,7 @@ function Login() {
     setLoading(true);
 
     try {
-      const response = await api.post('/auth/login', formData);
+      const response = await api.post(`${API}/auth/login`, formData);
 
       localStorage.setItem('tt_manager_token', response.data.token);
       localStorage.setItem('tt_manager_user', JSON.stringify(response.data.user));
@@ -43,7 +43,7 @@ function Login() {
         navigate('/dashboard');
       }, 500);
     } catch (requestError) {
-      toast.error(requestError.response?.data?.message || 'Invalid login. Please try again.');
+      toast.error(requestError.apiMessage || 'Invalid login. Please try again.');
     } finally {
       setLoading(false);
     }

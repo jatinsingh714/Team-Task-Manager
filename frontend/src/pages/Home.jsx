@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle2, ListTodo, TrendingUp, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar.jsx';
-import api from '../services/api.js';
+import api, { API } from '../services/api.js';
 import { itemVariants, listVariants, pageTransition, pageVariants, sectionVariants } from '../utils/motion.js';
 
 const features = [
@@ -29,9 +29,9 @@ function Home() {
 
   useEffect(() => {
     api
-      .get('/health')
+      .get(`${API}/health`)
       .then((response) => setStatus(response.data.message))
-      .catch(() => setStatus('Backend is not reachable yet.'));
+      .catch((requestError) => setStatus(requestError.apiMessage || 'Backend is not reachable yet.'));
   }, []);
 
   return (

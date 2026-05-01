@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { CheckCircle2, Clock3, Loader2, LogOut, Plus, RefreshCw, Search, Sparkles, Trash2 } from 'lucide-react';
-import api from '../services/api.js';
+import api, { API } from '../services/api.js';
 import { itemVariants, listVariants, pageTransition, pageVariants } from '../utils/motion.js';
 
 const statuses = ['pending', 'in-progress', 'done'];
@@ -73,7 +73,7 @@ function Dashboard() {
     setLoading(true);
 
     try {
-      const response = await api.get('/tasks');
+      const response = await api.get(`${API}/tasks`);
       setTasks(response.data.tasks || []);
     } catch (requestError) {
       if (requestError.response?.status === 401) {
@@ -83,7 +83,7 @@ function Dashboard() {
         return;
       }
 
-      toast.error(requestError.response?.data?.message || 'Unable to fetch tasks.');
+      toast.error(requestError.apiMessage || 'Unable to fetch tasks.');
     } finally {
       setLoading(false);
     }
@@ -97,10 +97,10 @@ function Dashboard() {
     setLoadingUsers(true);
 
     try {
-      const response = await api.get('/users');
+      const response = await api.get(`${API}/users`);
       setUsers(response.data.users || []);
     } catch (requestError) {
-      toast.error(requestError.response?.data?.message || 'Unable to fetch users.');
+      toast.error(requestError.apiMessage || 'Unable to fetch users.');
     } finally {
       setLoadingUsers(false);
     }
@@ -140,14 +140,14 @@ function Dashboard() {
     setUpdatingTaskId(taskId);
 
     try {
-      const response = await api.put(`/tasks/${taskId}`, { status });
+      const response = await api.put(`${API}/tasks/${taskId}`, { status });
 
       setTasks((currentTasks) =>
         currentTasks.map((task) => (task._id === taskId ? response.data.task : task))
       );
       toast.success('Task status updated.');
     } catch (requestError) {
-      toast.error(requestError.response?.data?.message || 'Unable to update task status.');
+      toast.error(requestError.apiMessage || 'Unable to update task status.');
     } finally {
       setUpdatingTaskId('');
     }
@@ -157,11 +157,11 @@ function Dashboard() {
     setUpdatingTaskId(taskId);
 
     try {
-      await api.delete(`/tasks/${taskId}`);
+      await api.delete(`${API}/tasks/${taskId}`);
       setTasks((currentTasks) => currentTasks.filter((task) => task._id !== taskId));
       toast.success('Task deleted successfully.');
     } catch (requestError) {
-      toast.error(requestError.response?.data?.message || 'Unable to delete task.');
+      toast.error(requestError.apiMessage || 'Unable to delete task.');
     } finally {
       setUpdatingTaskId('');
     }
@@ -178,7 +178,7 @@ function Dashboard() {
     setCreating(true);
 
     try {
-      const response = await api.post('/tasks', {
+      const response = await api.post(`${API}/tasks`, {
         title: taskForm.title.trim(),
         description: taskForm.description.trim(),
         assignedTo: taskForm.assignedTo.trim()
@@ -189,7 +189,7 @@ function Dashboard() {
       setShowCreateForm(false);
       toast.success('Task created successfully.');
     } catch (requestError) {
-      toast.error(requestError.response?.data?.message || 'Unable to create task.');
+      toast.error(requestError.apiMessage || 'Unable to create task.');
     } finally {
       setCreating(false);
     }
