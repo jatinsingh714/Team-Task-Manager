@@ -2,7 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import env from './config/env.js';
 import routes from './routes/index.js';
-import { errorHandler, notFound } from './middleware/errorMiddleware.js';
+import { notFound } from './middleware/errorMiddleware.js';
 
 const app = express();
 
@@ -25,12 +25,25 @@ app.use(
   cors(corsOptions)
 );
 app.options('*', cors(corsOptions));
+
+app.get('/api/health', (_req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Backend API is healthy'
+  });
+});
+
 app.use(express.json({ limit: env.jsonLimit }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api', routes);
 
 app.use(notFound);
-app.use(errorHandler);
+app.use((err, _req, res, _next) => {
+  res.status(500).json({
+    success: false,
+    message: err.message
+  });
+});
 
 export default app;
